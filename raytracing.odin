@@ -14,8 +14,11 @@ trace_viewport_pixel_color :: proc(ctx: Ctx, x, y: int) -> [3]f64 {
 trace_ray_color :: proc(ctx: Ctx, ray: Ray) -> [3]f64 {
 	switch obj in ctx.objects[0] {
 	case Sphere:
-		if hit_sphere(obj, ray) {
-			return {1, 0, 0}
+		t := sphere_intersect_t(obj, ray)
+		if t > 0 {
+			hit_point := ray_at(ray, t)
+			normal := linalg.normalize(hit_point - obj.position)
+			return 0.5 * [3]f64{normal.x + 1, normal.y + 1, normal.z + 1}
 		}
 	case BaseObject:
 		return {0, 0, 0}
@@ -26,12 +29,16 @@ trace_ray_color :: proc(ctx: Ctx, ray: Ray) -> [3]f64 {
 	return math.lerp([3]f64{1, 1, 1}, [3]f64{0.3, 0.55, 1}, a)
 }
 
-hit_sphere :: proc(sphere: Sphere, ray: Ray) -> bool {
+sphere_intersect_t :: proc(sphere: Sphere, ray: Ray) -> f64 {
 	pos_diff := sphere.position - ray.origin
 	a := linalg.dot(ray.direction, ray.direction)
 	b := -2.0 * linalg.dot(pos_diff, ray.direction)
 	c := linalg.dot(pos_diff, pos_diff) - sphere.radius * sphere.radius
 	discriminant := b * b - 4 * a * c
 
-	return discriminant >= 0
+	if discriminant < 0 {
+		return -1
+	}
+
+	return (-b - math.sqrt(discriminant)) / (2 * a)
 }
