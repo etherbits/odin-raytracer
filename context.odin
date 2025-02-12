@@ -12,7 +12,7 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 
 	cameraArgs := CameraArgs {
 		position       = [3]f64{0, 0, 0},
-		viewport_width = 3,
+		viewport_width = 3.556,
 		focal_length   = 1,
 		normal         = [3]f64{0, 1, 0},
 		image_width    = width,
@@ -21,7 +21,11 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	camera := init_camera(cameraArgs)
 	ctx.camera = camera
 	ctx.objects = [dynamic]Object{}
-	append(&ctx.objects, Sphere{position = [3]f64{0, 2, 0}, rotation = 0, scale = 1, radius = 1})
+	append(&ctx.objects, Sphere{position = [3]f64{0, 1, 0}, rotation = 0, scale = 1, radius = 0.5})
+	append(
+		&ctx.objects,
+		Sphere{position = [3]f64{0, 1, -100.5}, rotation = 0, scale = 1, radius = 100},
+	)
 
 	return ctx
 }
