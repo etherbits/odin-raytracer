@@ -5,8 +5,13 @@ import "core:math/linalg"
 import "core:os"
 
 main :: proc() {
-	// Passing the image output file path
-	ctx := init_ctx("out.ppm")
+	ctxArgs := CtxArgs {
+		width          = 400,
+		aspect_ratio   = 16. / 9,
+		viewport_scale = 1,
+		out_path       = "out.ppm",
+	}
+	ctx := init_ctx(ctxArgs)
 
 	// Write the header for ppm file format
 	write_head(ctx)

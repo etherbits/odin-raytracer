@@ -12,12 +12,11 @@ render :: proc(ctx: Ctx) {
 	using ctx.format
 
 	for y in 0 ..< height {
-		fmt.printfln("Scanline: %d/%d", y + 1, height)
+		// fmt.printfln("Scanline: %d/%d", y + 1, height)
 		for x in 0 ..< width {
-			pos := normalize_position(ctx, x, y)
-			col := [3]f64{pos[0], pos[1], 0.0}
+			ray_color := trace_viewport_pixel_color(ctx, x, y)
 
-			write_pixel(ctx, col)
+			write_pixel(ctx, ray_color)
 		}
 	}
 }
