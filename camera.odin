@@ -14,6 +14,7 @@ init_camera :: proc(args: CameraArgs) -> Camera {
 	tl_pixel := viewport_tl + (delta_u_pixel + delta_v_pixel) / 2
 
 	return Camera {
+		ray_bounce_depth,
 		viewport_width,
 		viewport_height,
 		focal_length,
@@ -31,13 +32,14 @@ init_camera :: proc(args: CameraArgs) -> Camera {
 }
 
 Camera :: struct {
+	ray_bounce_depth:                                                                              int,
 	viewport_width, viewport_height, focal_length, samples_per_pixel, pixel_sample_scale:          f64,
 	position, normal, viewport_u, viewport_v, delta_u_pixel, delta_v_pixel, viewport_tl, tl_pixel: [3]f64,
 }
 
 
 CameraArgs :: struct {
-	image_width, image_height:                       int,
+	image_width, image_height, ray_bounce_depth:     int,
 	viewport_width, focal_length, samples_per_pixel: f64,
 	position, normal:                                [3]f64,
 }

@@ -23,16 +23,22 @@ trace_viewport_pixel_color :: proc(ctx: Ctx, x, y: int) -> [3]f64 {
 	col := [3]f64{0, 0, 0}
 	for i in 0 ..< int(cam.samples_per_pixel) {
 		ray := get_ray(cam, f64(y), f64(x))
-		col += trace_ray_color(ctx, ray)
+		col += trace_ray_color(ctx, cam.ray_bounce_depth, ray)
 	}
 
 	return col * cam.pixel_sample_scale
 }
 
-trace_ray_color :: proc(ctx: Ctx, ray: Ray) -> [3]f64 {
-	hit, didHit := record_closest_hit(ctx.objects, ray, Interval{0, math.INF_F64}).(HitRecord)
+trace_ray_color :: proc(ctx: Ctx, depth: int, ray: Ray) -> [3]f64 {
+	if depth < 0 {
+		return [3]f64{0, 0, 0}
+	}
+
+	hit, didHit := record_closest_hit(ctx.objects, ray, Interval{0.001, math.INF_F64}).(HitRecord)
 	if didHit {
-		return 0.5 * (hit.normal + [3]f64{1, 1, 1})
+		bounce_dir := rand_lambertian_bounce_ray(hit.normal)
+		bounce_ray := Ray{hit.point, bounce_dir}
+		return 0.5 * trace_ray_color(ctx, depth - 1, bounce_ray)
 	}
 
 	normalized_ray_dir := linalg.normalize(ray.direction)

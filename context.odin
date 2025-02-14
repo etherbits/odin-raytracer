@@ -15,7 +15,8 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 		image_height      = ctx.format.height,
 		viewport_width    = 3.556,
 		focal_length      = 1,
-		samples_per_pixel = 32,
+		samples_per_pixel = 10,
+		ray_bounce_depth  = 10,
 		position          = [3]f64{0, 0, 0},
 		normal            = [3]f64{0, 1, 0},
 	}
@@ -23,6 +24,15 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	ctx.camera = camera
 	ctx.objects = [dynamic]Object{}
 	append(&ctx.objects, Sphere{position = [3]f64{0, 1, 0}, rotation = 0, scale = 1, radius = 0.5})
+	append(&ctx.objects, Sphere{position = [3]f64{4, 3, 1}, rotation = 0, scale = 1, radius = 0.5})
+	append(
+		&ctx.objects,
+		Sphere{position = [3]f64{-7, 5, 1}, rotation = 0, scale = 1, radius = 0.5},
+	)
+	append(
+		&ctx.objects,
+		Sphere{position = [3]f64{-8, 9, 4}, rotation = 0, scale = 1, radius = 0.5},
+	)
 	append(
 		&ctx.objects,
 		Sphere{position = [3]f64{0, 1, -100.5}, rotation = 0, scale = 1, radius = 100},
