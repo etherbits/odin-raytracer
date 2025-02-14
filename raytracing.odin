@@ -2,13 +2,31 @@ package main
 import "core:fmt"
 import "core:math"
 import "core:math/linalg"
+import "core:math/rand"
+
+sample_square :: proc() -> [3]f64 {
+	return [3]f64{rand.float64() - 0.5, 0, rand.float64() - 0.5}
+
+}
+
+get_ray :: proc(cam: Camera, y, x: f64) -> Ray {
+	offset := sample_square()
+	pixel_sample :=
+		cam.tl_pixel + ((x + offset.x) * cam.delta_u_pixel) + ((y + offset.z) * cam.delta_v_pixel)
+
+	return Ray{cam.position, pixel_sample - cam.position}
+
+}
 
 trace_viewport_pixel_color :: proc(ctx: Ctx, x, y: int) -> [3]f64 {
 	cam := ctx.camera
-	ray_origin := cam.tl_pixel + (f64(x) * cam.delta_u_pixel) + (f64(y) * cam.delta_v_pixel)
-	ray_dir := ray_origin - cam.position
-	ray := Ray{cam.position, ray_dir}
-	return trace_ray_color(ctx, ray)
+	col := [3]f64{0, 0, 0}
+	for i in 0 ..< int(cam.samples_per_pixel) {
+		ray := get_ray(cam, f64(y), f64(x))
+		col += trace_ray_color(ctx, ray)
+	}
+
+	return col * cam.pixel_sample_scale
 }
 
 trace_ray_color :: proc(ctx: Ctx, ray: Ray) -> [3]f64 {

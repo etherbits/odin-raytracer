@@ -11,12 +11,13 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	}
 
 	cameraArgs := CameraArgs {
-		position       = [3]f64{0, 0, 0},
-		viewport_width = 3.556,
-		focal_length   = 1,
-		normal         = [3]f64{0, 1, 0},
-		image_width    = width,
-		image_height   = ctx.format.height,
+		image_width       = width,
+		image_height      = ctx.format.height,
+		viewport_width    = 3.556,
+		focal_length      = 1,
+		samples_per_pixel = 32,
+		position          = [3]f64{0, 0, 0},
+		normal            = [3]f64{0, 1, 0},
 	}
 	camera := init_camera(cameraArgs)
 	ctx.camera = camera

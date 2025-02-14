@@ -1,4 +1,6 @@
 package main
+import "core:math"
+import "core:math/rand"
 
 Ray :: struct {
 	origin:    [3]f64,
@@ -27,4 +29,9 @@ interval_surrounds :: proc(interval: Interval, x: f64) -> bool {
 interval_size :: proc(interval: Interval) -> f64 {
 	using interval
 	return max - min
+}
+
+interval_clamp :: proc(interval: Interval, x: f64) -> f64 {
+	using interval
+	return math.clamp(x, min, max)
 }

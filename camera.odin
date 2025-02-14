@@ -5,6 +5,7 @@ init_camera :: proc(args: CameraArgs) -> Camera {
 
 	aspect_ratio := f64(image_width) / f64(image_height)
 	viewport_height := viewport_width / aspect_ratio
+	pixel_sample_scale := 1. / samples_per_pixel
 	viewport_u := [3]f64{viewport_width, 0, 0}
 	viewport_v := [3]f64{0, 0, -viewport_height}
 	delta_u_pixel := viewport_u / f64(image_width)
@@ -13,10 +14,12 @@ init_camera :: proc(args: CameraArgs) -> Camera {
 	tl_pixel := viewport_tl + (delta_u_pixel + delta_v_pixel) / 2
 
 	return Camera {
-		position,
 		viewport_width,
 		viewport_height,
 		focal_length,
+		samples_per_pixel,
+		pixel_sample_scale,
+		position,
 		normal,
 		viewport_u,
 		viewport_v,
@@ -28,25 +31,13 @@ init_camera :: proc(args: CameraArgs) -> Camera {
 }
 
 Camera :: struct {
-	position:        [3]f64,
-	viewport_width:  f64,
-	viewport_height: f64,
-	focal_length:    f64,
-	normal:          [3]f64,
-	viewport_u:      [3]f64,
-	viewport_v:      [3]f64,
-	delta_u_pixel:   [3]f64,
-	delta_v_pixel:   [3]f64,
-	viewport_tl:     [3]f64,
-	tl_pixel:        [3]f64,
+	viewport_width, viewport_height, focal_length, samples_per_pixel, pixel_sample_scale:          f64,
+	position, normal, viewport_u, viewport_v, delta_u_pixel, delta_v_pixel, viewport_tl, tl_pixel: [3]f64,
 }
 
 
 CameraArgs :: struct {
-	position:       [3]f64,
-	viewport_width: f64,
-	focal_length:   f64,
-	normal:         [3]f64,
-	image_width:    int,
-	image_height:   int,
+	image_width, image_height:                       int,
+	viewport_width, focal_length, samples_per_pixel: f64,
+	position, normal:                                [3]f64,
 }
