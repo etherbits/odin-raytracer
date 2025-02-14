@@ -6,16 +6,16 @@ import "core:math/linalg"
 record_closest_hit :: proc(
 	objects: [dynamic]Object,
 	ray: Ray,
-	t_range: [2]f64,
+	interval: Interval,
 ) -> Maybe(HitRecord) {
 	temp_rec := HitRecord{}
-	min_t := t_range[1]
+	min_t := interval.max
 	hit_something := false
 
 	for obj in objects {
 		switch obj in obj {
 		case Sphere:
-			hit, didHit := sphere_hit(obj, ray, [2]f64{t_range[0], min_t}).(HitRecord)
+			hit, didHit := sphere_hit(obj, ray, Interval{interval.min, min_t}).(HitRecord)
 			if didHit {
 				hit_something = true
 				if hit.t < min_t {
@@ -32,7 +32,7 @@ record_closest_hit :: proc(
 
 }
 
-sphere_hit :: proc(sphere: Sphere, ray: Ray, t_range: [2]f64) -> Maybe(HitRecord) {
+sphere_hit :: proc(sphere: Sphere, ray: Ray, t_range: Interval) -> Maybe(HitRecord) {
 	pos_diff := sphere.position - ray.origin
 	a := linalg.length2(ray.direction)
 	h := linalg.dot(pos_diff, ray.direction)
@@ -45,9 +45,9 @@ sphere_hit :: proc(sphere: Sphere, ray: Ray, t_range: [2]f64) -> Maybe(HitRecord
 
 	dsqrt := math.sqrt(discriminant)
 	root := (h - dsqrt) / a
-	if root <= t_range[0] || root > t_range[1] {
+	if !interval_surrounds(t_range, root) {
 		root = (h - dsqrt) / a
-		if root <= t_range[0] || root > t_range[1] {
+		if !interval_surrounds(t_range, root) {
 			return nil
 		}
 	}

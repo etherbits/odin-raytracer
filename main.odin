@@ -12,6 +12,7 @@ main :: proc() {
 		out_path       = "out.ppm",
 	}
 	ctx := init_ctx(ctxArgs)
+	defer clean_ctx(ctx)
 
 	// Write the header for ppm file format
 	write_head(ctx)

@@ -12,7 +12,7 @@ trace_viewport_pixel_color :: proc(ctx: Ctx, x, y: int) -> [3]f64 {
 }
 
 trace_ray_color :: proc(ctx: Ctx, ray: Ray) -> [3]f64 {
-	hit, didHit := record_closest_hit(ctx.objects, ray, [2]f64{0, math.INF_F64}).(HitRecord)
+	hit, didHit := record_closest_hit(ctx.objects, ray, Interval{0, math.INF_F64}).(HitRecord)
 	if didHit {
 		return 0.5 * (hit.normal + [3]f64{1, 1, 1})
 	}

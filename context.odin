@@ -30,6 +30,12 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	return ctx
 }
 
+
+clean_ctx :: proc(ctx: Ctx) {
+	os.close(ctx.file.handle)
+	delete(ctx.objects)
+}
+
 Ctx :: struct {
 	format:  Format,
 	file:    File,
