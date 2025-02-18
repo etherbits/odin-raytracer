@@ -8,7 +8,7 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	using args
 
 	aspect_ratio := 16.0 / 9.0
-	width := 960
+	width := 1340
 
 	fd := init_file(out_path)
 	ctx := Ctx {
@@ -19,24 +19,23 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	cameraArgs := CameraArgs {
 		image_width       = width,
 		image_height      = ctx.format.height,
-		vfov_deg          = 20,
-		samples_per_pixel = 480,
+		vfov_deg          = 28,
+		samples_per_pixel = 520,
 		ray_bounce_depth  = 48,
-		position          = [3]f64{13, -3, 2},
-		look_at           = [3]f64{0, 0, 0},
+		position          = [3]f64{9, -8, 4},
+		look_at           = [3]f64{1.5, 0, 0.6},
 		defocus_deg       = 0.6,
 		focus_dist        = 10.,
 	}
 	camera := init_camera(cameraArgs)
 	ctx.camera = camera
 	ctx.objects = [dynamic]Object{}
-	// Second part conversion - random sphere field
-	ground_material := Lambertian {
-		albedo = [3]f64{0.5, 0.52, 0.4},
+	ground_material := Metal {
+		albedo = [3]f64{0.2, 0.22, 0.23},
+		fuzz   = 0.4,
 	}
 	append(&ctx.objects, Sphere{{ground_material, [3]f64{0, 0, -1000}, 0, 1}, 1000})
 
-	// Using range-based loops in Odin
 	for a in -8 ..< 8 {
 		for b in -8 ..< 8 {
 			choose_mat := rand.float64()
@@ -80,18 +79,23 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	material1 := Dielectric {
 		ir = 1.5,
 	}
-	append(&ctx.objects, Sphere{{material1, [3]f64{0, -2, 1}, 0, 1}, 1.0})
+	append(&ctx.objects, Sphere{{material1, [3]f64{1.4, -2.9, 1}, 0, 1}, 1.0})
 
 	material2 := Lambertian {
-		albedo = [3]f64{0.4, 0.2, 0.7},
+		albedo = [3]f64{0.3, 0.2, 0.6},
 	}
 	append(&ctx.objects, Sphere{{material2, [3]f64{-4, 0, 1}, 0, 1}, 1.0})
 
 	material3 := Metal {
-		albedo = [3]f64{0.7, 0.1, 0.5},
-		fuzz   = 0.0,
+		albedo = [3]f64{0.6, 0.1, 0.52},
+		fuzz   = 0.05,
 	}
-	append(&ctx.objects, Sphere{{material3, [3]f64{4, 0, 1}, 0, 1}, 1.0})
+	append(&ctx.objects, Sphere{{material3, [3]f64{1.7, -0.4, 1.3}, 0, 1}, 1.3})
+	material4 := Metal {
+		albedo = [3]f64{0.7, 0.7, 0.78},
+		fuzz   = 0.7,
+	}
+	append(&ctx.objects, Sphere{{material4, [3]f64{4, 1.2, 1}, 0, 1}, 1.0})
 
 	return ctx
 }
