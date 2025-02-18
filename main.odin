@@ -6,10 +6,7 @@ import "core:os"
 
 main :: proc() {
 	ctxArgs := CtxArgs {
-		width          = 400,
-		aspect_ratio   = 16. / 9,
-		viewport_scale = 1,
-		out_path       = "out.ppm",
+		out_path = "out.ppm",
 	}
 	ctx := init_ctx(ctxArgs)
 	defer clean_ctx(ctx)
