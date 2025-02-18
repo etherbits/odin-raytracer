@@ -1,7 +1,7 @@
 ## Raytracer written in Odin
 This is a simple raytracer written in Odin. It is based on the book "Ray Tracing in One Weekend" by Peter Shirley. The book is available for free [here](https://raytracing.github.io/books/RayTracingInOneWeekend.html).
 
-To run the raytracer, you need to have the Odin compiler installed. You can find the Odin compiler [here](https://odin.handmade.network/). Once you have the compiler installed, you can run the raytracer by running the following command in the terminal:
+To run the raytracer, you need to have the Odin compiler installed. You can find the Odin compiler [here](https://odin-lang.org/docs/install/). Once you have the compiler installed, you can run the raytracer by running the following command in the terminal:
 
 ```
 odin run .
