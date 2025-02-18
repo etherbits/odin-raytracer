@@ -7,9 +7,9 @@ To run the raytracer, you need to have the Odin compiler installed. You can find
 odin run .
 ```
 
-This will compile the code and run the raytracer. The raytracer will output a .ppm file which you can view using an image viewer. I recommend using [IrfanView](https://www.irfanview.com/).
+This will compile the code and run the raytracer. The raytracer will output a .ppm file which you can view using an image viewer.
 
 The raytracer is very simple and only supports spheres and Lambertian materials.
 
-## Example output
-![Example output](out.ppm)
+## Example render
+![Example render](https://github.com/user-attachments/assets/ad6d0fbb-831a-4218-9555-b51f95a3b8a8)
