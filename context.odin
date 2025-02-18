@@ -1,4 +1,5 @@
 package main
+import "core:math"
 import "core:os"
 
 init_ctx :: proc(args: CtxArgs) -> Ctx {
@@ -13,12 +14,13 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	cameraArgs := CameraArgs {
 		image_width       = width,
 		image_height      = ctx.format.height,
-		viewport_width    = 3.556,
-		focal_length      = 1,
-		samples_per_pixel = 32,
+		vfov_deg          = 20,
+		samples_per_pixel = 10,
 		ray_bounce_depth  = 10,
-		position          = [3]f64{0, 0, 0},
-		normal            = [3]f64{0, 1, 0},
+		position          = [3]f64{-2, -1, 2},
+		look_at           = [3]f64{0, 1, 0},
+		defocus_deg       = 10.,
+		focus_dist        = 3.4,
 	}
 	camera := init_camera(cameraArgs)
 	ctx.camera = camera
@@ -29,23 +31,26 @@ init_ctx :: proc(args: CtxArgs) -> Ctx {
 	mat_center := Lambertian {
 		albedo = [3]f64{0.1, 0.2, 0.5},
 	}
-	mat_left := Metal {
-		albedo = [3]f64{0.8, 0.8, 0.8},
-		fuzz   = 0.8,
+	mat_left := Dielectric {
+		ir = 1.5,
+		// ir = 1. / 1.33,
+	}
+	mat_bubble := Dielectric {
+		ir = 1. / 1.5,
 	}
 	mat_top := Metal {
 		albedo = [3]f64{0.4, 0.6, 0.9},
 		fuzz   = 0.6,
 	}
 	mat_right := Metal {
-		albedo = [3]f64{0.6, 0.6, 0.6},
-		fuzz   = 0.005,
+		albedo = [3]f64{0.8, 0.6, 0.2},
+		fuzz   = 0.4,
 	}
 	append(&ctx.objects, Sphere{{mat_ground, [3]f64{0, 1, -100.5}, 0, 1}, 100})
-	append(&ctx.objects, Sphere{{mat_center, [3]f64{0, 1.5, 0}, 0, 1}, 0.5})
+	append(&ctx.objects, Sphere{{mat_center, [3]f64{0, 1.2, 0}, 0, 1}, 0.5})
 	append(&ctx.objects, Sphere{{mat_left, [3]f64{-1, 1, 0}, 0, 1}, 0.5})
-	append(&ctx.objects, Sphere{{mat_top, [3]f64{1, 2, 1}, 0, 1}, 0.5})
-	append(&ctx.objects, Sphere{{mat_right, [3]f64{2, 1.4, 0.1}, 0, 1}, 0.6})
+	append(&ctx.objects, Sphere{{mat_bubble, [3]f64{-1, 1, 0}, 0, 1}, 0.40})
+	append(&ctx.objects, Sphere{{mat_right, [3]f64{1, 1, 0}, 0, 1}, 0.5})
 
 	return ctx
 }

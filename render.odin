@@ -18,7 +18,7 @@ render :: proc(ctx: Ctx) {
 	using ctx.format
 
 	for y in 0 ..< height {
-		// fmt.printfln("Scanline: %d/%d", y + 1, height)
+		fmt.printfln("Scanline: %d/%d", y + 1, height)
 		for x in 0 ..< width {
 			ray_color := trace_viewport_pixel_color(ctx, x, y)
 

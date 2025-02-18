@@ -4,18 +4,25 @@ import "core:math"
 import "core:math/linalg"
 import "core:math/rand"
 
-sample_square :: proc() -> [3]f64 {
-	return [3]f64{rand.float64() - 0.5, 0, rand.float64() - 0.5}
-
-}
 
 get_ray :: proc(cam: Camera, y, x: f64) -> Ray {
 	offset := sample_square()
 	pixel_sample :=
 		cam.tl_pixel + ((x + offset.x) * cam.delta_u_pixel) + ((y + offset.z) * cam.delta_v_pixel)
 
-	return Ray{cam.position, pixel_sample - cam.position}
+	ray_origin := (cam.defocus_deg <= 0) ? cam.position : defocus_disk_sample(cam)
+	direction := pixel_sample - ray_origin
+	return Ray{ray_origin, direction}
 
+}
+
+sample_square :: proc() -> [3]f64 {
+	return [3]f64{rand.float64() - 0.5, 0, rand.float64() - 0.5}
+}
+
+defocus_disk_sample :: proc(cam: Camera) -> [3]f64 {
+	point := rand_disk_unit_vector()
+	return cam.position + (cam.defocus_disk_u * point.x) + (cam.defocus_disk_v * point.y)
 }
 
 trace_viewport_pixel_color :: proc(ctx: Ctx, x, y: int) -> [3]f64 {
@@ -45,5 +52,5 @@ trace_ray_color :: proc(ctx: Ctx, depth: int, ray: Ray) -> [3]f64 {
 
 	normalized_ray_dir := linalg.normalize(ray.direction)
 	a := 0.5 * (normalized_ray_dir.z + 1.0)
-	return math.lerp([3]f64{1, 1, 1}, [3]f64{0.3, 0.55, 1}, a)
+	return math.lerp([3]f64{1, 1, 1}, [3]f64{0.5, 0.7, 1}, a)
 }

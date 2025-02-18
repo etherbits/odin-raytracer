@@ -20,7 +20,7 @@ record_closest_hit :: proc(
 				hit_something = true
 				if hit.t < min_t {
 					temp_rec = hit
-					min_t = temp_rec.t
+					min_t = hit.t
 				}
 			}
 		case BaseObject:
@@ -36,7 +36,7 @@ sphere_hit :: proc(sphere: Sphere, ray: Ray, t_range: Interval) -> Maybe(HitReco
 	pos_diff := sphere.position - ray.origin
 	a := linalg.length2(ray.direction)
 	h := linalg.dot(pos_diff, ray.direction)
-	c := linalg.dot(pos_diff, pos_diff) - sphere.radius * sphere.radius
+	c := linalg.length2(pos_diff) - sphere.radius * sphere.radius
 	discriminant := h * h - a * c
 
 	if discriminant < 0 {
@@ -56,7 +56,8 @@ sphere_hit :: proc(sphere: Sphere, ray: Ray, t_range: Interval) -> Maybe(HitReco
 
 	rec.t = root
 	rec.point = ray_at(ray, root)
-	rec.normal = (rec.point - sphere.position) / sphere.radius
+	outward_normal := (rec.point - sphere.position) / sphere.radius
+	set_hit_record_face_normal(&rec, ray, outward_normal)
 	rec.material = sphere.material
 
 

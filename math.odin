@@ -59,6 +59,20 @@ rand_unit_vector :: proc() -> [3]f64 {
 	}
 }
 
+rand_disk_unit_vector :: proc() -> [3]f64 {
+	for {
+		v := [3]f64{rand.float64_range(-1, 1), rand.float64_range(-1, 1), 0}
+		v_len2 := linalg.length2(v)
+		if v_len2 < 1 {
+			return v
+		}
+	}
+}
+
+rand_lambertian_bounce_ray :: proc(normal: [3]f64) -> [3]f64 {
+	return normal + rand_unit_vector()
+}
+
 rand_uniform_bounce_ray :: proc(normal: [3]f64) -> [3]f64 {
 	in_unit_sphere := rand_unit_vector()
 	if linalg.dot(in_unit_sphere, normal) > 0 {
@@ -71,8 +85,17 @@ reflect :: proc(v, n: [3]f64) -> [3]f64 {
 	return v - 2 * linalg.dot(v, n) * n
 }
 
-rand_lambertian_bounce_ray :: proc(normal: [3]f64) -> [3]f64 {
-	return normal + rand_unit_vector()
+refract :: proc(uv, n: [3]f64, etai_over_etat: f64) -> [3]f64 {
+	cos_theta := math.min(linalg.dot(-uv, n), 1.0)
+	r_out_perp := etai_over_etat * (uv + cos_theta * n)
+	r_out_parallel := -math.sqrt(math.abs(1.0 - linalg.length2(r_out_perp))) * n
+	return r_out_perp + r_out_parallel
+}
+
+reflectance :: proc(cosine, ref_idx: f64) -> f64 {
+	r0 := (1 - ref_idx) / (1 + ref_idx)
+	r0 = r0 * r0
+	return r0 + (1 - r0) * math.pow(1 - cosine, 5)
 }
 
 near_zero :: proc(v: [3]f64) -> bool {
