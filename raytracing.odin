@@ -36,9 +36,11 @@ trace_ray_color :: proc(ctx: Ctx, depth: int, ray: Ray) -> [3]f64 {
 
 	hit, didHit := record_closest_hit(ctx.objects, ray, Interval{0.001, math.INF_F64}).(HitRecord)
 	if didHit {
-		bounce_dir := rand_lambertian_bounce_ray(hit.normal)
-		bounce_ray := Ray{hit.point, bounce_dir}
-		return 0.5 * trace_ray_color(ctx, depth - 1, bounce_ray)
+		bounce_ray, attenuation, didBounce := scatter(ctx, ray, hit)
+		if didBounce {
+			return attenuation * trace_ray_color(ctx, depth - 1, bounce_ray)
+		}
+		return [3]f64{0, 0, 0}
 	}
 
 	normalized_ray_dir := linalg.normalize(ray.direction)

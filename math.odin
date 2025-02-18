@@ -67,6 +67,15 @@ rand_uniform_bounce_ray :: proc(normal: [3]f64) -> [3]f64 {
 	return -in_unit_sphere
 }
 
+reflect :: proc(v, n: [3]f64) -> [3]f64 {
+	return v - 2 * linalg.dot(v, n) * n
+}
+
 rand_lambertian_bounce_ray :: proc(normal: [3]f64) -> [3]f64 {
 	return normal + rand_unit_vector()
+}
+
+near_zero :: proc(v: [3]f64) -> bool {
+	s := 1e-8
+	return math.abs(v.x) < s && math.abs(v.y) < s && math.abs(v.z) < s
 }

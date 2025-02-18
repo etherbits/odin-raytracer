@@ -6,7 +6,7 @@ import "core:os"
 
 main :: proc() {
 	ctxArgs := CtxArgs {
-		width          = 1000,
+		width          = 400,
 		aspect_ratio   = 16. / 9,
 		viewport_scale = 1,
 		out_path       = "out.ppm",
